@@ -1,5 +1,7 @@
 module.exports = function (sequelize, DataTypes) {
-  const Citizens = sequelize.define('Citizens', {
+  const Citizens = sequelize.define(
+    'Citizens',
+    {
       name: {
         type: DataTypes.STRING,
       },
@@ -9,16 +11,17 @@ module.exports = function (sequelize, DataTypes) {
       phone: {
         type: DataTypes.STRING,
       },
-      password: DataTypes.STRING,
     },
     {
-      timestamps: false
-    }
+      timestamps: false,
+      freezeTableName: true,
+    },
   )
-  
+
   Citizens.associate = (models) => {
-    Citizens.hasMany(models.Payments)
+    // Citizens.hasMany(models.Payments)
+    // Citizens.belongsTo(models.Buldings)
   }
-  
+
   return Citizens
 }

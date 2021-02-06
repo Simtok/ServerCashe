@@ -6,14 +6,6 @@ let resolvers = {
   },
   Payment: {
     citizenId: async (parent, args, context) => {
-      // let myId = +parent.dataValues.CitizenId
-      // console.log('************ 11111 ******', await parent.getCitizen())
-
-      // console.log('From citizenid - ', parent.dataValues, 'Parent.dataValues.CitizenId -', myId)
-      // let citizen = await context.sequelize.models.Citizens.findOne({
-      //   where: { id: myId },
-      //   include: context.sequelize.models.Payments,
-      // })
       return await parent.getCitizen()
     },
   },
