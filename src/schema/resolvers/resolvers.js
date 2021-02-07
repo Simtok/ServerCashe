@@ -1,12 +1,17 @@
 let resolvers = {
-  Citizen: {
+  Houses: {
     payments: (parent) => {
       return parent.dataValues.Payments
     },
   },
+  Citizen: {
+    HouseId: async (parent, args, context) => {
+      return await parent.getHouse()
+    },
+  },
   Payment: {
-    citizenId: async (parent, args, context) => {
-      return await parent.getCitizen()
+    HouseId: async (parent, args, context) => {
+      return await parent.getHouse()
     },
   },
 

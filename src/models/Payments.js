@@ -4,6 +4,7 @@ module.exports = function (sequelize, DataTypes) {
     {
       dateOfPayments: DataTypes.DATEONLY,
       summ: DataTypes.DECIMAL(10, 2),
+      quarter: DataTypes.STRING,
     },
 
     {
@@ -12,7 +13,7 @@ module.exports = function (sequelize, DataTypes) {
     },
   )
   Payments.associate = (models) => {
-    Payments.belongsTo(models.Buldings)
+    Payments.belongsTo(models.Houses)
   }
 
   return Payments

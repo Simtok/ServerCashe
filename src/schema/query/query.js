@@ -1,26 +1,33 @@
 const schema = `
 type Query {
-  getCitizen(id: ID!): Citizen
   getAllCitizen: [Citizen]
-  getPayWithCitizen(id: ID!): [Payment]
-  getCitizenWithPays(id: ID!): Citizen
   getAllPayments: [Payment]
+  getAllExpense: [Expense]
+  getCitizen(id: ID!): Citizen
   getPayment(id: ID!): Payment
+  getExpense(id: ID!): Expense
   getAdmin(login: String!,password: String!): Admin
   getAdminByName(login: String!): Admin
   getAllAdminn: [Admin]
-  getExpense(id: ID!): Expense
-  getAllExpense: [Expense]
+  getPayWithCitizen(id: ID!): [Payment]
+  getCitizenWithPays(id: ID!): Citizen
 }
 
 
 type Citizen {
   id: ID!
   name: String!
-  address: String!
+  birthday: String
   phone: String!
-  password: String
   payments: [Payment]
+}
+
+type House {
+  id: ID!
+  homenumber: STRING!
+  address: STRING!
+  payments: [Payment]
+  citizens: [Citizen]
 }
 
 type Admin {
@@ -43,6 +50,8 @@ type Expense {
   dateOfExpenditure: String! 
   summOfExpenditure: String! 
 }
+
+
 
 type Mutation {
   addCitizen (  name: String, address: String, phone: String): Citizen

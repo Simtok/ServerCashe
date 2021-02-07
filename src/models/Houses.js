@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes) {
-  const Buldings = sequelize.define(
-    'Buildings',
+  const Houses = sequelize.define(
+    'Houses',
     {
       homenumber: {
         type: DataTypes.STRING,
@@ -15,10 +15,10 @@ module.exports = function (sequelize, DataTypes) {
     },
   )
 
-  Buldings.associate = (models) => {
-    Buldings.hasMany(models.Citizens)
-    Buldings.hasMany(models.Payments)
+  Houses.associate = (models) => {
+    Houses.hasMany(models.Citizens)
+    Houses.hasMany(models.Payments)
   }
 
-  return Buldings
+  return Houses
 }

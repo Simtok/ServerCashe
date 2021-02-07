@@ -5,8 +5,8 @@ module.exports = function (sequelize, DataTypes) {
       name: {
         type: DataTypes.STRING,
       },
-      address: {
-        type: DataTypes.STRING,
+      birthday: {
+        type: DataTypes.DATEONLY,
       },
       phone: {
         type: DataTypes.STRING,
@@ -19,8 +19,8 @@ module.exports = function (sequelize, DataTypes) {
   )
 
   Citizens.associate = (models) => {
-    // Citizens.hasMany(models.Payments)
-    // Citizens.belongsTo(models.Buldings)
+    Citizens.belongsTo(models.Houses)
+    Citizens.hasMany(models.Payments)
   }
 
   return Citizens
