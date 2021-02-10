@@ -1,31 +1,18 @@
 const schema = `
-type Query {
-  getAllCitizen: [Citizen]
-  getAllPayments: [Payment]
-  getAllExpense: [Expense]
-  getCitizen(id: ID!): Citizen
-  getPayment(id: ID!): Payment
-  getExpense(id: ID!): Expense
-  getAdmin(login: String!,password: String!): Admin
-  getAdminByName(login: String!): Admin
-  getAllAdminn: [Admin]
-  getPayWithCitizen(id: ID!): [Payment]
-  getCitizenWithPays(id: ID!): Citizen
-}
-
-
 type Citizen {
   id: ID!
   name: String!
   birthday: String
   phone: String!
   payments: [Payment]
+  houseId: House
 }
 
 type House {
   id: ID!
-  homenumber: STRING!
-  address: STRING!
+  homenumber: String!
+  street: String!
+  sity: String!
   payments: [Payment]
   citizens: [Citizen]
 }
@@ -41,7 +28,9 @@ type Payment {
   id: ID!
   dateOfPayments: String!
   summ: String!
+  quarter: String!
   citizenId: Citizen
+  houseId: House
 }
 
 type Expense {
@@ -52,19 +41,41 @@ type Expense {
 }
 
 
+type Query {
+  getAllCitizen: [Citizen]
+  getAllPayments: [Payment]
+  getAllExpense: [Expense]
+  getAllAdmin: [Admin]
+  getAllHouses: [House]
+  getCitizen(id: ID!): Citizen
+  getPayment(id: ID!): Payment
+  getExpense(id: ID!): Expense
+  getHouse(id: ID!): House
+  getAdmin(login: String!,password: String!): Admin
+  getAdminByName(login: String!): Admin
+
+}
+
 
 type Mutation {
-  addCitizen (  name: String, address: String, phone: String): Citizen
-  editCitizen (  id: ID!, name: String, address: String, phone: String): Citizen
-  delCitizen (  id: ID!): Citizen
   addAdmin (  name: String!, login: String!, password: String! ): Admin
+  addCitizen (  name: String, birthday: String, phone: String, houseId: ID!): Citizen
+  editCitizen (  id: ID!, name: String, birthday: String, phone: String, houseId: ID!): Citizen
+  delCitizen (  id: ID!): Citizen
   addExpense (  name: String!, dateOfExpenditure: String!, summOfExpenditure: String!): Expense
   editExpense (  id: ID!, name: String!, dateOfExpenditure: String!, summOfExpenditure: String!): Expense
   delExpense (  id: ID!): Expense
-  addPayment (  dateOfPayments: String!, summ: String!, citizenId: ID!): Payment
-  editPayment ( id: ID!, dateOfPayments: String!, summ: String!, citizenId: ID!): Payment
+  addPayment (  dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!): Payment
+  editPayment ( id: ID!, dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!): Payment
   delPayment (  id: ID!): Payment
+  addHouse (homenumber: String!, street: String!, sity: String!): House
+  editHouse (id: ID!, homenumber: String!, street: String!, sity: String!): House
+  delHouse (id: ID!): House
 }
+
+
+  
+
 
 `
 

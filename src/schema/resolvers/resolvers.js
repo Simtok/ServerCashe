@@ -1,53 +1,43 @@
 let resolvers = {
-  Houses: {
-    payments: (parent) => {
-      return parent.dataValues.Payments
+  House: {
+    payments: async (parent) => {
+      return await parent.dataValues.Payments
+    },
+    citizens: async (parent) => {
+      return await parent.dataValues.Citizens
     },
   },
   Citizen: {
-    HouseId: async (parent, args, context) => {
+    houseId: async (parent) => {
       return await parent.getHouse()
+    },
+    payments: async (parent) => {
+      return await parent.dataValues.Payments
     },
   },
   Payment: {
-    HouseId: async (parent, args, context) => {
+    houseId: async (parent) => {
       return await parent.getHouse()
+    },
+    citizenId: async (parent) => {
+      return await parent.getCitizen()
     },
   },
 
   Query: {
+    getHouse: async (_, { id }, context) => {
+      let resp = await context.sequelize.models.Houses.findOne({
+        where: { id: id },
+        // include: [context.sequelize.models.Payments, context.sequelize.models.Citizens],
+      })
+      return resp
+    },
     getCitizen: async (_, { id }, context) => {
       let citizen = await context.sequelize.models.Citizens.findOne({
         where: { id: id },
-        include: context.sequelize.models.Payments,
+        // include: [context.sequelize.models.Payments, context.sequelize.models.Houses],
       })
       return citizen
-    },
-    getAdmin: async (_, { login, password }, context) => {
-      let admin = await context.sequelize.models.Admin.findOne({
-        where: { login: login, password: password },
-      })
-      return admin
-    },
-    getAdminByName: async (_, { login }, context) => {
-      let admin = await context.sequelize.models.Admin.findOne({
-        where: { name: login },
-      })
-      return admin
-    },
-    getPayWithCitizen: async (parent, { id }, context) => {
-      let payments = await context.sequelize.models.Payments.findAll({
-        where: { id: id },
-        include: context.sequelize.models.Citizens,
-      })
-      return payments
-    },
-    getCitizenWithPays: async (parent, { id }, context) => {
-      let result = await context.sequelize.models.Citizens.findOne({
-        where: { id: id },
-        include: context.sequelize.models.Payments,
-      })
-      return result
     },
     getExpense: async (_, { id }, context) => {
       let expense = await context.sequelize.models.Expenses.findOne({
@@ -55,51 +45,100 @@ let resolvers = {
       })
       return expense
     },
-    getAllExpense: async (parent, args, context) => {
-      let expense = await context.sequelize.models.Expenses.findAll()
-      return expense
-    },
-    getAllCitizen: async (parent, args, context) => {
-      let citizen = await context.sequelize.models.Citizens.findAll({
-        include: context.sequelize.models.Payments,
-      })
-      return citizen
-    },
-    getAllPayments: async (_, __, context) => {
-      let payments = await context.sequelize.models.Payments.findAll({
-        include: context.sequelize.models.Citizens,
-      })
-      return payments
-    },
     getPayment: async (_, { id }, context) => {
       let payment = await context.sequelize.models.Payments.findByPk(id, {
         include: context.sequelize.models.Citizens,
       })
       return payment
     },
-  },
-
-  Mutation: {
-    addCitizen: async (_, args, context) => {
-      const citizen = await context.sequelize.models.Citizens.create({
-        name: args.name,
-        address: args.address,
-        phone: args.phone,
+    getAdmin: async (_, { login, password }, context) => {
+      let admin = await context.sequelize.models.Admins.findOne({
+        where: { login: login, password: password },
+      })
+      return admin
+    },
+    getAdminByName: async (_, { login }, context) => {
+      let admin = await context.sequelize.models.Admins.findOne({
+        where: { name: login },
+      })
+      return admin
+    },
+    getAllPayments: async (_, __, context) => {
+      let payments = await context.sequelize.models.Payments.findAll()
+      return payments
+      // include: [context.sequelize.models.Citizens, context.sequelize.models.Houses],
+    },
+    getAllExpense: async (_, __, context) => {
+      let expense = await context.sequelize.models.Expenses.findAll()
+      return expense
+    },
+    getAllCitizen: async (_, __, context) => {
+      let citizen = await context.sequelize.models.Citizens.findAll({
+        // include: [context.sequelize.models.Payments, context.sequelize.models.Houses],
       })
       return citizen
     },
-    editCitizen: async (_, { id, name, address, phone }, context) => {
+    getAllHouses: async (_, __, context) => {
+      let houses = await context.sequelize.models.Houses.findAll({})
+      return houses
+    },
+  },
+
+  // ******************************** Mutations  *******************************
+
+  Mutation: {
+    addHouse: async (_, args, context) => {
+      const resp = await context.sequelize.models.Houses.create({
+        homenumber: args.homenumber,
+        street: args.street,
+        sity: args.sity,
+      })
+      return resp
+    },
+    editHouse: async (_, args, context) => {
+      const resp = await context.sequelize.models.Houses.update(
+        {
+          homenumber: args.homenumber,
+          street: args.street,
+          sity: args.sity,
+        },
+        { where: { id: id } },
+      ).then(() => {
+        return context.sequelize.models.Houses.findByPk(id)
+      })
+      return resp
+    },
+    delHouse: async (_, { id }, context) => {
+      const resp = await context.sequelize.models.Houses.findByPk(id).then((result) => {
+        return context.sequelize.models.Houses.destroy({ where: { id: id } }).then((u) => {
+          return result
+        })
+      })
+      return resp
+    },
+    addCitizen: async (_, args, context) => {
+      const resp = await context.sequelize.models.Citizens.create({
+        name: args.name,
+        houseId: args.houseId,
+        phone: args.phone,
+        birthday: args.birthday,
+      }).then((citizen) => citizen.setHouse(args.houseId))
+      return resp
+    },
+    editCitizen: async (_, { id, name, houseId, phone }, context) => {
       const cit = await context.sequelize.models.Citizens.update(
         {
           name: name,
           address: address,
           phone: phone,
+          houseId: args.houseId,
         },
         { where: { id: id } },
-      ).then(() => {
-        return context.sequelize.models.Citizens.findByPk(id)
-      })
-
+      )
+        .then((citizen) => citizen.setHouse(args.houseId))
+        .then(() => {
+          return context.sequelize.models.Citizens.findByPk(id)
+        })
       return cit
     },
     delCitizen: async (_, { id }, context) => {
@@ -108,11 +147,10 @@ let resolvers = {
           return result
         })
       })
-
       return cit
     },
     addAdmin: async (_, args, context) => {
-      const admin = await context.sequelize.models.Admin.create({
+      const admin = await context.sequelize.models.Admins.create({
         name: args.name,
         login: args.login,
         password: args.password,
@@ -148,12 +186,19 @@ let resolvers = {
       })
       return data
     },
-    addPayment: async (_, { dateOfPayments, summ, citizenId }, context) => {
-      const payment = await context.sequelize.models.Payments.create({
+    addPayment: async (_, { dateOfPayments, summ, citizenId, houseId, quarter }, context) => {
+      const resp = await context.sequelize.models.Payments.create({
         dateOfPayments: dateOfPayments,
         summ: summ,
-      }).then((payment) => payment.setCitizen(citizenId))
-      return payment
+        quarter: quarter,
+      }).then(async (payment) => {
+        console.log(payment)
+        await payment.setCitizen(citizenId)
+        await payment.setHouse(houseId)
+        return payment
+      })
+      console.log(resp)
+      return resp
     },
     editPayment: async (_, { id, dateOfPayments, summ, citizenId }, context) => {
       let data = await context.sequelize.models.Payments.update(

@@ -14,6 +14,7 @@ module.exports = function (sequelize, DataTypes) {
   )
   Payments.associate = (models) => {
     Payments.belongsTo(models.Houses)
+    Payments.belongsTo(models.Citizens)
   }
 
   return Payments

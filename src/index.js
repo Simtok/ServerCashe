@@ -4,7 +4,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const config = require('./config/config')
 const { sequelize } = require('./models')
-const models = require('./models')
 
 // const { typeDefs, resolvers } = require('./schema');
 const schema = require('./schema/query/query')
@@ -27,8 +26,8 @@ app.use(cors(), bodyParser.json())
 
 server.applyMiddleware({ app })
 
-// sequelize.sync().then(() => {
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync().then(() => {
+  // sequelize.sync({ force: true }).then(() => {
   app.listen({ port: config.port })
   console.log(`Server started at port ${config.port}`)
 })

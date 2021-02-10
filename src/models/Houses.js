@@ -5,7 +5,10 @@ module.exports = function (sequelize, DataTypes) {
       homenumber: {
         type: DataTypes.STRING,
       },
-      address: {
+      street: {
+        type: DataTypes.STRING,
+      },
+      sity: {
         type: DataTypes.STRING,
       },
     },
