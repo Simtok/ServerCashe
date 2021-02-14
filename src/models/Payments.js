@@ -5,6 +5,7 @@ module.exports = function (sequelize, DataTypes) {
       dateOfPayments: DataTypes.DATEONLY,
       summ: DataTypes.DECIMAL(10, 2),
       quarter: DataTypes.STRING,
+      year: DataTypes.INTEGER,
     },
 
     {

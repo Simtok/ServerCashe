@@ -5,7 +5,7 @@ type Citizen {
   birthday: String
   phone: String!
   payments: [Payment]
-  houseId: House
+  houseId: House!
 }
 
 type House {
@@ -29,8 +29,9 @@ type Payment {
   dateOfPayments: String!
   summ: String!
   quarter: String!
-  citizenId: Citizen
-  houseId: House
+  year: Int!
+  citizenId: Citizen!
+  houseId: House!
 }
 
 type Expense {
@@ -65,8 +66,8 @@ type Mutation {
   addExpense (  name: String!, dateOfExpenditure: String!, summOfExpenditure: String!): Expense
   editExpense (  id: ID!, name: String!, dateOfExpenditure: String!, summOfExpenditure: String!): Expense
   delExpense (  id: ID!): Expense
-  addPayment (  dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!): Payment
-  editPayment ( id: ID!, dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!): Payment
+  addPayment (  dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!, year: Int!): Payment
+  editPayment ( id: ID!, dateOfPayments: String!, summ: String!, houseId: ID!, citizenId: ID!, quarter: String!, year: Int!): Payment
   delPayment (  id: ID!): Payment
   addHouse (homenumber: String!, street: String!, sity: String!): House
   editHouse (id: ID!, homenumber: String!, street: String!, sity: String!): House

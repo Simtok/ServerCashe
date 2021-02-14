@@ -49,6 +49,7 @@ let resolvers = {
       let payment = await context.sequelize.models.Payments.findByPk(id, {
         include: context.sequelize.models.Citizens,
       })
+
       return payment
     },
     getAdmin: async (_, { login, password }, context) => {
@@ -125,17 +126,17 @@ let resolvers = {
       }).then((citizen) => citizen.setHouse(args.houseId))
       return resp
     },
-    editCitizen: async (_, { id, name, houseId, phone }, context) => {
+    editCitizen: async (_, { id, name, houseId, phone, birthday }, context) => {
       const cit = await context.sequelize.models.Citizens.update(
         {
           name: name,
-          address: address,
+          birthday: birthday,
           phone: phone,
-          houseId: args.houseId,
+          houseId: houseId,
         },
         { where: { id: id } },
       )
-        .then((citizen) => citizen.setHouse(args.houseId))
+        .then((citizen) => citizen.setHouse(houseId))
         .then(() => {
           return context.sequelize.models.Citizens.findByPk(id)
         })
@@ -186,26 +187,32 @@ let resolvers = {
       })
       return data
     },
-    addPayment: async (_, { dateOfPayments, summ, citizenId, houseId, quarter }, context) => {
+    addPayment: async (_, { dateOfPayments, summ, citizenId, houseId, quarter, year }, context) => {
       const resp = await context.sequelize.models.Payments.create({
         dateOfPayments: dateOfPayments,
-        summ: summ,
+        summ: +summ,
         quarter: quarter,
+        year: +year,
       }).then(async (payment) => {
-        console.log(payment)
         await payment.setCitizen(citizenId)
         await payment.setHouse(houseId)
+        console.log(payment)
+
         return payment
       })
-      console.log(resp)
       return resp
     },
-    editPayment: async (_, { id, dateOfPayments, summ, citizenId }, context) => {
+    editPayment: async (
+      _,
+      { id, dateOfPayments, summ, quarter, year, citizenId, houseId },
+      context,
+    ) => {
       let data = await context.sequelize.models.Payments.update(
         {
           dateOfPayments: dateOfPayments,
-          summ: summ,
-          citizenId: +citizenId,
+          summ: +summ,
+          quarter: quarter,
+          year: +year,
         },
         { where: { id: id } },
       )
@@ -213,8 +220,9 @@ let resolvers = {
           return context.sequelize.models.Payments.findByPk(id)
         })
         .then(async (payment) => {
-          let temp = await payment.setCitizen(citizenId)
-          return temp
+          await payment.setCitizen(citizenId)
+          await payment.setHouse(houseId)
+          return payment
         })
 
       return data
