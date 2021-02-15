@@ -136,10 +136,10 @@ let resolvers = {
         },
         { where: { id: id } },
       )
-        .then((citizen) => citizen.setHouse(houseId))
         .then(() => {
           return context.sequelize.models.Citizens.findByPk(id)
         })
+        .then((citizen) => citizen.setHouse(houseId))
       return cit
     },
     delCitizen: async (_, { id }, context) => {
