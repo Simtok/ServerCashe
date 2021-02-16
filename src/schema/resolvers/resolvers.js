@@ -27,15 +27,19 @@ let resolvers = {
   Query: {
     getHouse: async (_, { id }, context) => {
       let resp = await context.sequelize.models.Houses.findOne({
-        where: { id: id },
-        // include: [context.sequelize.models.Payments, context.sequelize.models.Citizens],
+        where: {
+          id: id,
+        },
+        include: [context.sequelize.models.Payments, context.sequelize.models.Citizens],
       })
       return resp
     },
     getCitizen: async (_, { id }, context) => {
       let citizen = await context.sequelize.models.Citizens.findOne({
-        where: { id: id },
-        // include: [context.sequelize.models.Payments, context.sequelize.models.Houses],
+        where: {
+          id: id,
+        },
+        include: [context.sequelize.models.Payments],
       })
       return citizen
     },
@@ -75,7 +79,7 @@ let resolvers = {
     },
     getAllCitizen: async (_, __, context) => {
       let citizen = await context.sequelize.models.Citizens.findAll({
-        // include: [context.sequelize.models.Payments, context.sequelize.models.Houses],
+        include: [context.sequelize.models.Payments],
       })
       return citizen
     },
