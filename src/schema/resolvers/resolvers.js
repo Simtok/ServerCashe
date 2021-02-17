@@ -107,9 +107,9 @@ let resolvers = {
           street: args.street,
           sity: args.sity,
         },
-        { where: { id: id } },
+        { where: { id: args.id } },
       ).then(() => {
-        return context.sequelize.models.Houses.findByPk(id)
+        return context.sequelize.models.Houses.findByPk(args.id)
       })
       return resp
     },
