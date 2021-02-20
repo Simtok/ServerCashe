@@ -22,6 +22,10 @@ const server = new ApolloServer({
 console.log(sequelize.models)
 const app = express()
 
+app.get('/', (req, res) => {
+  res.end('<h1> Test server </h1>')
+})
+
 app.use(cors(), bodyParser.json())
 
 server.applyMiddleware({ app })
