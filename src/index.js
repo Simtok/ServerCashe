@@ -1,11 +1,9 @@
 const { ApolloServer, gql } = require('apollo-server-express')
 const express = require('express')
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const config = require('./config/config')
 const { sequelize } = require('./models')
 
-// const { typeDefs, resolvers } = require('./schema');
 const schema = require('./schema/query/query')
 const resolvers = require('./schema/resolvers/resolvers')
 
@@ -19,14 +17,13 @@ const server = new ApolloServer({
   },
 })
 
-console.log(sequelize.models)
 const app = express()
 
 app.get('/', (req, res) => {
   res.end('<h1> Test server </h1>')
 })
 
-app.use(cors(), bodyParser.json())
+app.use(cors(), express.json())
 
 server.applyMiddleware({ app })
 

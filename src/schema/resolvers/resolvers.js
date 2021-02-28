@@ -84,7 +84,9 @@ let resolvers = {
       return citizen
     },
     getAllHouses: async (_, __, context) => {
-      let houses = await context.sequelize.models.Houses.findAll({})
+      let houses = await context.sequelize.models.Houses.findAll({
+        include: [context.sequelize.models.Payments, context.sequelize.models.Citizens],
+      })
       return houses
     },
   },
